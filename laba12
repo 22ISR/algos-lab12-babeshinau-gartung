@@ -1,0 +1,69 @@
+import tkinter as tk
+from tkinter import messagebox
+import random
+import string
+root = tk.Tk()
+root.geometry("250x250")
+root.title("Самый крутой генератор пароля")
+
+def generate_password():
+    try:
+        length = int(length_entry.get())
+        if length <= 0:
+            raise ValueError
+    except ValueError:
+        messagebox.showerror("Абшибка", f"СЛИШКАМ НЕКАРЕТНЫЕ ДАННЫНЕ")
+        return
+
+    chars = string.ascii_letters
+    password_chars = []
+
+    if special_var.get():
+        special_chars = "!@#$%^&*()-_=+[]{}|;:,.<>?/"
+        chars += special_chars
+        password_chars.append(random.choice(special_chars))
+
+    if space_var.get():
+        space_chars = " "
+        chars += space_chars
+        password_chars.append(random.choice(space_chars))
+
+    if number_var.get():
+        number_chars = string.digits
+        chars += number_chars
+        password_chars.append(random.choice(number_chars))
+
+    if length < len(password_chars):
+        messagebox.showerror("апшипка", f"незя коротка {len(password_chars)} пишы больше.")
+        return
+
+
+    remaining_length = length - len(password_chars)
+    password_chars += random.choices(chars, k=remaining_length)
+
+    random.shuffle(password_chars)
+
+    password = "".join(password_chars)
+    password_entry.delete(0, tk.END)
+    password_entry.insert(0, password)
+
+tk.Label(root, text="Длина парольчика").grid(row=0, column=0, sticky="w")
+length_entry = tk.Entry(root)
+length_entry.grid(row=0, column=1)
+length_entry.insert(0, "12") 
+
+special_var = tk.IntVar()
+space_var = tk.IntVar()
+number_var = tk.IntVar()
+
+tk.Checkbutton(root, text="Спецю символи", variable=special_var).grid(row=1, column=0, columnspan=2, sticky="w")
+tk.Checkbutton(root, text="Про бельчики", variable=space_var).grid(row=2, column=0, columnspan=2, sticky="w")
+tk.Checkbutton(root, text="цЫфры", variable=number_var).grid(row=3, column=0, columnspan=2, sticky="w")
+
+generate_button = tk.Button(root, text="сгенерить", command=generate_password)
+generate_button.grid(row=4, column=0, columnspan=2, pady=10)
+
+password_entry = tk.Entry(root, width=40)
+password_entry.grid(row=5, column=0, columnspan=2)
+
+root.mainloop()
